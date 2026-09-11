@@ -1,0 +1,3229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ReCastell</title>
+
+<style>
+ * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            text-align: center;
+            color: white;
+            background:
+                radial-gradient(circle at 50% -10%, rgba(244,197,66,.13), transparent 32%),
+                radial-gradient(circle at 10% 40%, rgba(102,75,170,.12), transparent 30%),
+                linear-gradient(180deg, #090a0f 0%, #0b0c12 48%, #07080b 100%);
+            letter-spacing: .1px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 25px 15px;
+        }
+
+        h1 {
+            font-size: 50px;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            font-size: 20px;
+            color: #d8d8d8;
+        }
+
+        /* ================= HOME ================= */
+
+        #home {
+            display: block;
+        }
+
+        .castle-icon {
+            font-size: 130px;
+            margin-top: 30px;
+
+            animation: floating 3s infinite;
+        }
+
+        .welcome-text {
+            margin-top: 20px;
+        }
+
+        .enter-button {
+            margin-top: 25px;
+            padding: 16px 35px;
+
+            border: 2px solid #f4c542;
+            border-radius: 12px;
+
+            background: #f4c542;
+            color: #171426;
+
+            font-size: 18px;
+            font-weight: bold;
+
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .enter-button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 20px #f4c542;
+        }
+
+        /* ================= CASTLE GATE ================= */
+
+        #castle-wall {
+            position: relative;
+
+            width: 320px;
+            height: 220px;
+
+            margin: 30px auto;
+
+            overflow: hidden;
+
+            border-radius: 160px 160px 20px 20px;
+
+            background: linear-gradient(
+                #777,
+                #555
+            );
+
+            border: 8px solid #8f8f8f;
+
+            box-shadow: 0 0 30px rgba(0,0,0,0.7);
+        }
+
+        .castle-tower {
+            position: absolute;
+
+            top: 0;
+
+            width: 70px;
+            height: 100%;
+
+            background: #666;
+        }
+
+        .tower-left {
+            left: 0;
+        }
+
+        .tower-right {
+            right: 0;
+        }
+
+        .gate-area {
+            position: absolute;
+
+            left: 50%;
+            bottom: 0;
+
+            transform: translateX(-50%);
+
+            width: 150px;
+            height: 175px;
+
+            overflow: hidden;
+
+            border: 4px solid #333;
+
+            border-bottom: none;
+
+            background: #222;
+        }
+
+        .gate {
+            position: absolute;
+
+            top: 0;
+
+            width: 50%;
+            height: 100%;
+
+            background: #8b4513;
+
+            transition: all 1.5s ease;
+
+            z-index: 2;
+        }
+
+        .gate-left {
+            left: 0;
+
+            border-right: 2px solid #222;
+        }
+
+        .gate-right {
+            right: 0;
+
+            border-left: 2px solid #222;
+        }
+
+        .gate-area.open .gate-left {
+            transform: translateX(-100%);
+        }
+
+        .gate-area.open .gate-right {
+            transform: translateX(100%);
+        }
+
+        .gate-handle {
+            position: absolute;
+
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+
+            font-size: 40px;
+
+            z-index: 5;
+        }
+
+        /* ================= CASTLE PAGE ================= */
+
+        #castlePage {
+            display: none;
+        }
+
+        .castle-title {
+            font-size: 35px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #d8d8d8;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            max-width: 850px;
+
+            margin: 25px auto;
+
+            display: flex;
+            justify-content: center;
+
+            gap: 20px;
+
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            min-width: 180px;
+
+            padding: 15px;
+
+            border-radius: 15px;
+
+            background: rgba(255,255,255,0.1);
+
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-number {
+            font-size: 25px;
+            font-weight: bold;
+            color: #f4c542;
+        }
+
+        /* ================= MAP ================= */
+
+        .map {
+            max-width: 900px;
+
+            margin: 30px auto;
+
+            padding: 35px 25px;
+
+            border-radius: 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(55,45,70,0.95),
+                    rgba(25,20,35,0.95)
+                );
+
+            border: 3px solid #8b7355;
+
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+        }
+
+        .map-title {
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .rooms {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(180px, 1fr));
+
+            gap: 20px;
+        }
+
+        .room {
+            padding: 25px 15px;
+
+            border-radius: 18px;
+
+            background: rgba(255,255,255,0.08);
+
+            border: 2px solid rgba(255,255,255,0.15);
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .room:hover {
+            transform: translateY(-8px);
+
+            border-color: #f4c542;
+
+            box-shadow:
+                0 8px 20px rgba(244,197,66,0.4);
+        }
+
+        .room-icon {
+            font-size: 55px;
+        }
+
+        .room h3 {
+            margin: 12px 0 5px;
+        }
+
+        .room p {
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        /* ================= ROOM WINDOW ================= */
+
+
+        .room-window h2 {
+            color: #f4c542;
+        }
+
+        button {
+            padding: 12px 22px;
+
+            margin: 8px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #f4c542;
+
+            color: #171426;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* ================= METER ================= */
+
+        .meter-box {
+            max-width: 700px;
+
+            margin: 30px auto;
+        }
+
+        .meter {
+            width: 100%;
+            height: 25px;
+
+            background: #211d29;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        #meterBar {
+            width: 0%;
+
+            height: 100%;
+
+            background: #f4c542;
+
+            transition: 0.5s;
+        }
+
+        /* ================= CERTIFICATE ================= */
+
+        input {
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            width: 80%;
+
+            max-width: 300px;
+        }
+
+        #certificateMessage {
+            white-space: pre-line;
+
+            margin-top: 20px;
+
+            font-size: 18px;
+        }
+
+        .back-button {
+            background: #444;
+            color: white;
+        }
+
+        .reset-button {
+            background: #b33;
+            color: white;
+
+            margin-top: 30px;
+        }
+
+        /* ================= ANIMATIONS ================= */
+
+        @keyframes floating {
+
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+
+        }
+
+        @keyframes appear {
+
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media(max-width:600px) {
+
+            h1 {
+                font-size: 40px;
+            }
+
+            .castle-icon {
+                font-size: 100px;
+            }
+
+            #castle-wall {
+                width: 280px;
+            }
+
+            .rooms {
+                grid-template-columns: 1fr;
+            }
+
+            .map {
+                padding: 25px 15px;
+            }
+
+        }
+
+/* ================= MINI GAMES ================= */
+
+.games-section{
+
+    max-width:950px;
+
+    margin:40px auto;
+
+    padding:30px 20px;
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(55,45,70,.95),
+            rgba(25,20,35,.95)
+        );
+
+    border:3px solid #8b7355;
+
+    box-shadow:
+        0 0 30px rgba(0,0,0,.6);
+}
+
+
+.games-section h2{
+
+    color:#f4c542;
+
+    font-size:30px;
+
+    margin-bottom:5px;
+}
+
+
+.games-section > p{
+
+    color:#ccc;
+
+    margin-bottom:25px;
+}
+
+
+.games-container{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px,1fr)
+        );
+
+    gap:20px;
+}
+
+
+.game-card{
+
+    padding:25px 15px;
+
+    border-radius:18px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    border:2px solid
+        rgba(255,255,255,.15);
+
+    transition:.3s;
+}
+
+
+.game-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:#f4c542;
+
+    box-shadow:
+        0 8px 20px
+        rgba(244,197,66,.3);
+}
+
+
+.game-icon{
+
+    font-size:50px;
+}
+
+
+.game-card h3{
+
+    color:#f4c542;
+
+    margin:10px 0;
+}
+
+
+.game-card p{
+
+    color:#ccc;
+
+    font-size:14px;
+}
+
+
+#coinGameArea{
+
+    position:relative;
+
+    width:100%;
+
+    height:130px;
+
+    margin:15px auto;
+
+    border-radius:12px;
+
+    background:#211d29;
+
+    border:2px dashed #777;
+
+    overflow:hidden;
+}
+
+
+#movingCoin{
+
+    position:absolute;
+
+    left:20px;
+
+    top:40px;
+
+    margin:0;
+
+    padding:10px;
+
+    border-radius:50%;
+
+    font-size:25px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+
+#clickCount{
+
+    font-size:16px;
+
+    color:#f4c542;
+}
+
+
+#coinGameMessage{
+
+    min-height:20px;
+
+    color:#f4c542;
+}
+
+
+#questionMessage{
+
+    min-height:45px;
+
+    color:#f4c542;
+
+    font-weight:bold;
+}
+
+
+@media(max-width:600px){
+
+    .games-section{
+
+        padding:25px 12px;
+    }
+
+    .games-container{
+
+        grid-template-columns:1fr;
+    }
+
+}
+/* ================= GAME STYLE CASTLE MAP ================= */
+
+.castle-map{
+    max-width:1000px;
+    margin:40px auto;
+    padding:25px;
+    border-radius:25px;
+    background:linear-gradient(145deg,#211d29,#0f0c18);
+    border:4px solid #7c6a4a;
+    box-shadow:0 0 40px rgba(0,0,0,.7);
+}
+
+.map-title{
+    color:#f4c542;
+    font-size:32px;
+    margin-bottom:5px;
+}
+
+.map-subtitle{
+    color:#bdb6c8;
+    margin-bottom:25px;
+}
+
+.game-castle{
+    position:relative;
+    width:100%;
+    height:650px;
+    margin:auto;
+    overflow:hidden;
+    background:linear-gradient(135deg,#615446,#3d342d);
+    border:14px solid #918170;
+    border-radius:35px;
+    box-shadow:inset 0 0 60px rgba(0,0,0,.7);
+}
+
+.corner-tower{
+    position:absolute;
+    width:85px;
+    height:85px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:55px;
+    background:#5a5148;
+    border:5px solid #9d8d78;
+    border-radius:50%;
+    z-index:5;
+}
+
+.top-left{top:10px;left:10px}
+.top-right{top:10px;right:10px}
+.bottom-left{bottom:10px;left:10px}
+.bottom-right{bottom:10px;right:10px}
+
+.central-castle-hall{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:300px;
+    height:230px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:radial-gradient(circle,#75634f,#3b3027);
+    border:7px double #d0ae68;
+    border-radius:35px;
+    box-shadow:inset 0 0 40px rgba(0,0,0,.7),0 0 20px rgba(0,0,0,.6);
+    z-index:3;
+}
+
+.hall-symbol{font-size:70px}
+
+.central-castle-hall h2{
+    color:#f4c542;
+    margin:5px;
+}
+
+.central-castle-hall p{
+    font-size:12px;
+    color:#ddd;
+}
+
+.map-room{
+    position:absolute;
+    width:180px;
+    height:130px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:linear-gradient(145deg,#695a4a,#3c3128);
+    border:5px solid #a88d65;
+    border-radius:18px;
+    cursor:pointer;
+    z-index:4;
+    transition:.3s;
+    box-shadow:inset 0 0 20px rgba(0,0,0,.6),0 8px 15px rgba(0,0,0,.5);
+}
+
+.map-room:hover{
+    transform:translateX(10px) scale(1.08);
+    border-color:#f4c542;
+    box-shadow:0 0 25px rgba(244,197,66,.7);
+}
+
+/* Keep the throne centered while giving it the same rightward hover motion */
+.map-room.throne-room:hover{
+    transform:translateX(calc(-50% + 10px)) scale(1.08);
+}
+
+.room-symbol{font-size:50px}
+
+.room-name{
+    margin-top:5px;
+    color:white;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.throne-room{
+    top:55px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.wizard-room{top:150px;left:70px}
+.treasure-room{top:150px;right:70px}
+.secret-room{bottom:105px;left:100px}
+.certificate-map-room{bottom:105px;right:100px}
+
+.path{
+    position:absolute;
+    background:rgba(210,185,140,.35);
+    border-radius:10px;
+    z-index:1;
+}
+
+.path-1{
+    width:25px;
+    height:150px;
+    top:165px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.path-2{
+    width:260px;
+    height:25px;
+    top:285px;
+    left:80px;
+}
+
+.path-3{
+    width:260px;
+    height:25px;
+    top:285px;
+    right:80px;
+}
+
+.path-4{
+    width:25px;
+    height:180px;
+    bottom:80px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.player{
+    position:absolute;
+    left:50%;
+    bottom:110px;
+    transform:translateX(-50%);
+    font-size:38px;
+    z-index:6;
+    animation:playerBounce 1.5s infinite;
+}
+
+@keyframes playerBounce{
+    0%,100%{transform:translateX(-50%) translateY(0)}
+    50%{transform:translateX(-50%) translateY(-8px)}
+}
+
+.main-gate{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:170px;
+    height:85px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:#201914;
+    border:6px solid #9c815d;
+    border-bottom:none;
+    border-radius:80px 80px 0 0;
+    font-size:35px;
+    z-index:5;
+}
+
+.main-gate span{
+    font-size:11px;
+    color:#ddd;
+    margin-top:3px;
+}
+
+@media(max-width:700px){
+    .game-castle{height:780px}
+    .map-room{width:140px;height:110px}
+    .throne-room{top:100px}
+    .wizard-room{top:230px;left:20px}
+    .treasure-room{top:230px;right:20px}
+    .central-castle-hall{width:220px;height:180px}
+    .secret-room{bottom:150px;left:20px}
+    .certificate-map-room{bottom:150px;right:20px}
+    .path-2,.path-3{width:160px}
+    .corner-tower{width:65px;height:65px;font-size:40px}
+}
+/* ================= ROOM POPUP EFFECT ================= */
+
+.room-window{
+    max-width:700px;
+    margin:35px auto;
+    padding:30px 20px;
+
+    background:
+        linear-gradient(145deg,#2b2540,#151221);
+
+    border:3px solid #f4c542;
+    border-radius:25px;
+
+    box-shadow:
+        0 0 35px rgba(244,197,66,.35);
+
+    animation: roomOpen .5s ease;
+}
+
+@keyframes roomOpen{
+
+    from{
+        opacity:0;
+        transform:scale(.75) translateY(30px);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
+}
+
+
+/* Room heading */
+
+.room-window h2{
+    font-size:30px;
+    color:#f4c542;
+}
+
+
+/* Room buttons */
+
+.room-window button{
+    min-width:160px;
+}
+
+
+/* Close button */
+
+.back-button{
+    margin-top:25px;
+}
+
+
+/* ================= ROOM FLASH ================= */
+
+.room-flash{
+    animation:flashRoom .4s ease;
+}
+
+@keyframes flashRoom{
+
+    0%{
+        box-shadow:
+            0 0 0 rgba(244,197,66,0);
+    }
+
+    50%{
+        box-shadow:
+            0 0 60px rgba(244,197,66,.9);
+    }
+
+    100%{
+        box-shadow:
+            0 0 0 rgba(244,197,66,0);
+    }
+}
+/* ================= CASTLE QUEST SYSTEM ================= */
+
+.quest-panel{
+    max-width:750px;
+    margin:30px auto;
+    padding:25px;
+
+    background:linear-gradient(145deg,#211b35,#120f1d);
+
+    border:2px solid #f4c542;
+    border-radius:22px;
+
+    box-shadow:0 0 25px rgba(244,197,66,.25);
+
+    text-align:center;
+
+    animation:questAppear .6s ease;
+}
+
+@keyframes questAppear{
+
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+.quest-panel h2{
+    color:#f4c542;
+    margin-bottom:8px;
+}
+
+.quest-panel > p{
+    color:#bbb;
+    margin-bottom:20px;
+}
+
+.quest-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.quest-item{
+
+    display:grid;
+    grid-template-columns:40px 1fr;
+    text-align:left;
+
+    padding:14px;
+
+    background:#302943;
+
+    border:1px solid #51486b;
+    border-radius:14px;
+
+    transition:.3s;
+}
+
+.quest-item span{
+    grid-row:span 2;
+    font-size:25px;
+}
+
+.quest-item b{
+    color:white;
+}
+
+.quest-item small{
+    color:#aaa;
+    margin-top:3px;
+}
+
+.quest-item.completed{
+
+    border-color:#55d66b;
+
+    background:#183520;
+
+    transform:scale(1.02);
+}
+
+.quest-item.completed span{
+    color:#55d66b;
+}
+
+.quest-progress{
+
+    margin-top:20px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#161321;
+
+    color:#ddd;
+}
+
+.quest-progress strong{
+    color:#f4c542;
+}
+
+#questMessage{
+
+    margin-top:15px;
+
+    min-height:25px;
+
+    color:#f4c542;
+
+    font-weight:bold;
+}
+/* ================= QUEST REWARD ================= */
+
+#questReward{
+    margin-top:12px;
+    padding:12px;
+
+    background:#302943;
+    border:1px dashed #f4c542;
+    border-radius:12px;
+
+    color:#f4c542;
+    font-weight:bold;
+
+    opacity:.8;
+}
+
+.reward-active{
+    animation:rewardPop .6s ease;
+}
+
+@keyframes rewardPop{
+
+    0%{
+        transform:scale(.7);
+        opacity:0;
+    }
+
+    60%{
+        transform:scale(1.15);
+    }
+
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+.secret-challenge{
+    margin-top:25px;
+    padding:20px;
+
+    background:#191525;
+
+    border:2px dashed #f4c542;
+    border-radius:18px;
+
+    text-align:center;
+}
+
+.secret-challenge h3{
+    color:#f4c542;
+}
+
+.secret-challenge button{
+    margin:15px 0;
+}
+
+#secretMessage{
+    color:#ddd;
+    font-weight:bold;
+    min-height:25px;
+}
+/* ================= FORBIDDEN CHAMBER ================= */
+
+.secret-castle{
+    position:relative;
+    max-width:700px;
+    margin:20px auto;
+    padding:40px 25px;
+
+    text-align:center;
+
+    background:
+        radial-gradient(circle at center,
+        #332052 0%,
+        #181225 45%,
+        #0b0912 100%);
+
+    border:3px solid #f4c542;
+    border-radius:28px;
+
+    box-shadow:
+        0 0 25px rgba(244,197,66,.35),
+        inset 0 0 40px rgba(120,70,180,.25);
+
+    overflow:hidden;
+
+    animation:secretAppear .8s ease;
+}
+
+@keyframes secretAppear{
+
+    from{
+        opacity:0;
+        transform:scale(.85);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.secret-title{
+    font-size:30px;
+    font-weight:bold;
+    color:#f4c542;
+
+    text-shadow:
+        0 0 10px rgba(244,197,66,.8);
+
+    margin-bottom:10px;
+}
+
+.secret-subtitle{
+    color:#c9c3d8;
+    font-size:16px;
+}
+
+.crystal{
+    font-size:85px;
+    margin:25px 0;
+
+    animation:crystalGlow 2s infinite alternate;
+}
+
+@keyframes crystalGlow{
+
+    from{
+        transform:scale(1);
+        filter:drop-shadow(0 0 5px #9b6cff);
+    }
+
+    to{
+        transform:scale(1.15);
+        filter:drop-shadow(0 0 30px #c084ff);
+    }
+}
+
+.secret-warning{
+
+    display:inline-block;
+
+    padding:15px 25px;
+
+    margin:10px 0 25px;
+
+    border:1px dashed #f4c542;
+    border-radius:15px;
+
+    color:#f4c542;
+
+    background:rgba(0,0,0,.25);
+}
+
+.mystery-button{
+
+    display:block;
+
+    margin:10px auto;
+
+    padding:15px 25px;
+
+    border:none;
+    border-radius:12px;
+
+    background:#f4c542;
+    color:#17121f;
+
+    font-weight:bold;
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.mystery-button:hover{
+
+    transform:scale(1.08);
+
+    box-shadow:
+        0 0 25px rgba(244,197,66,.8);
+}
+
+.secret-message{
+
+    margin:20px auto;
+
+    min-height:30px;
+
+    color:white;
+
+    font-size:18px;
+    font-weight:bold;
+}
+
+.secret-door{
+
+    margin-top:30px;
+
+    color:#888;
+
+    font-size:30px;
+}
+
+.secret-door span{
+
+    display:block;
+
+    font-size:12px;
+
+    color:#777;
+
+    letter-spacing:2px;
+}
+/* ================= CONGRATULATIONS CELEBRATION ================= */
+
+#celebration{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:9999;
+    overflow:hidden;
+}
+
+.confetti{
+    position:absolute;
+    top:-20px;
+    width:10px;
+    height:18px;
+    animation:confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall{
+
+    0%{
+        transform:translateY(0) rotate(0deg);
+        opacity:1;
+    }
+
+    100%{
+        transform:translateY(110vh) rotate(720deg);
+        opacity:0;
+    }
+}
+
+.glitter{
+    position:absolute;
+    top:-20px;
+    font-size:22px;
+    animation:glitterFall 2.5s ease-out forwards;
+}
+
+@keyframes glitterFall{
+
+    0%{
+        transform:translateY(0) scale(.5) rotate(0);
+        opacity:0;
+    }
+
+    20%{
+        opacity:1;
+    }
+
+    100%{
+        transform:translateY(110vh) scale(1.4) rotate(360deg);
+        opacity:0;
+    }
+}
+
+.congrats-popup{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(.5);
+
+    z-index:10000;
+
+    padding:30px 45px;
+
+    background:#171322;
+
+    border:3px solid #f4c542;
+    border-radius:25px;
+
+    text-align:center;
+
+    box-shadow:0 0 60px rgba(244,197,66,.8);
+
+    animation:congratsPop .6s ease forwards;
+}
+
+.congrats-popup h2{
+    color:#f4c542;
+    font-size:32px;
+    margin:0 0 10px;
+}
+
+.congrats-popup p{
+    color:white;
+    margin:0;
+    font-size:18px;
+}
+
+@keyframes congratsPop{
+
+    0%{
+        transform:translate(-50%,-50%) scale(.3);
+        opacity:0;
+    }
+
+    70%{
+        transform:translate(-50%,-50%) scale(1.1);
+    }
+
+    100%{
+        transform:translate(-50%,-50%) scale(1);
+        opacity:1;
+    }
+}
+
+/* ================= USER FRIENDLY IMPROVEMENTS ================= */
+
+button,
+.map-room{
+    touch-action: manipulation;
+}
+
+button:focus-visible,
+.map-room:focus-visible{
+    outline:3px solid #fff;
+    outline-offset:3px;
+}
+
+#celebration{
+    display:block;
+}
+
+.congrats-popup{
+    pointer-events:auto;
+    width:min(90vw,520px);
+    box-sizing:border-box;
+    padding:28px 22px;
+}
+
+.popup-trophy{
+    font-size:64px;
+    animation: trophyBounce .8s ease infinite alternate;
+}
+
+@keyframes trophyBounce{
+    from{ transform:translateY(0) scale(1); }
+    to{ transform:translateY(-8px) scale(1.08); }
+}
+
+.congrats-popup strong{
+    display:block;
+    margin:12px 0 18px;
+    color:#f4c542;
+    font-size:18px;
+}
+
+.congrats-popup button{
+    margin-top:8px;
+    width:100%;
+    max-width:280px;
+}
+
+@media(max-width:600px){
+
+    .quest-panel{
+        margin:20px 10px;
+        padding:20px 14px;
+    }
+
+    .quest-item{
+        padding:12px;
+    }
+
+    .quest-item b{
+        font-size:14px;
+    }
+
+    .quest-item small{
+        font-size:12px;
+    }
+
+    .map-room{
+        cursor:pointer;
+    }
+
+    .congrats-popup h2{
+        font-size:24px;
+    }
+
+    .congrats-popup p{
+        font-size:15px;
+    }
+}
+
+
+/* ================= CINEMATIC ANIMATION PACK ================= */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 50% 20%,rgba(244,197,66,.05),transparent 35%);animation:ambientGlow 5s ease-in-out infinite alternate}
+@keyframes ambientGlow{from{opacity:.55}to{opacity:1}}
+.castle-icon{animation:floating 3s ease-in-out infinite,castleGlow 2.5s ease-in-out infinite alternate}
+@keyframes castleGlow{from{filter:drop-shadow(0 0 2px rgba(244,197,66,.15))}to{filter:drop-shadow(0 0 22px rgba(244,197,66,.55))}}
+.enter-button{animation:buttonPulse 2s ease-in-out infinite}
+@keyframes buttonPulse{0%,100%{box-shadow:0 0 0 rgba(244,197,66,0)}50%{box-shadow:0 0 24px rgba(244,197,66,.35)}}
+#castleWall,#castle-wall{animation:gateEntrance .8s ease both}
+@keyframes gateEntrance{from{opacity:0;transform:translateY(25px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.gate-handle{cursor:pointer;transition:transform .35s,filter .35s}
+.gate-handle:hover{transform:translate(-50%,-50%) scale(1.2) rotate(-8deg);filter:drop-shadow(0 0 12px #f4c542)}
+.gate-handle.unlocked{animation:unlockPop .8s ease}
+@keyframes unlockPop{0%{transform:translate(-50%,-50%) scale(1)}35%{transform:translate(-50%,-50%) scale(1.35) rotate(-15deg)}70%{transform:translate(-50%,-50%) scale(.9) rotate(8deg)}100%{transform:translate(-50%,-50%) scale(1)}}
+#castlePage{animation:pageReveal .9s ease both}
+@keyframes pageReveal{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:none}}
+.stats .stat{animation:statFloat 3s ease-in-out infinite}
+.stats .stat:nth-child(2){animation-delay:.35s}
+@keyframes statFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.game-castle{animation:castleBreath 4s ease-in-out infinite}
+@keyframes castleBreath{0%,100%{box-shadow:inset 0 0 60px rgba(0,0,0,.7),0 0 0 rgba(244,197,66,0)}50%{box-shadow:inset 0 0 60px rgba(0,0,0,.7),0 0 28px rgba(244,197,66,.12)}}
+.corner-tower{animation:towerFloat 3s ease-in-out infinite}
+.top-right{animation-delay:.5s}.bottom-left{animation-delay:1s}.bottom-right{animation-delay:1.5s}
+@keyframes towerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.map-room{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s}
+.map-room:hover{transform:translateX(10px) translateY(-5px) scale(1.08)}
+.map-room.throne-room:hover{transform:translateX(calc(-50% + 10px)) translateY(-5px) scale(1.08)}
+.room-symbol{animation:iconIdle 2.2s ease-in-out infinite}
+@keyframes iconIdle{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(2deg)}}
+.path{animation:pathGlow 2.5s ease-in-out infinite alternate}
+@keyframes pathGlow{from{opacity:.35}to{opacity:.75;box-shadow:0 0 10px rgba(244,197,66,.18)}}
+.player{animation:playerBounce 1.5s infinite,playerWalk 2.5s ease-in-out infinite}
+@keyframes playerWalk{0%,100%{filter:none}50%{filter:drop-shadow(0 0 8px rgba(244,197,66,.4))}}
+.main-gate{animation:gateLight 2.5s ease-in-out infinite alternate}
+@keyframes gateLight{from{box-shadow:inset 0 0 15px rgba(244,197,66,.05)}to{box-shadow:inset 0 0 25px rgba(244,197,66,.25)}}
+.room-window{transform-origin:top center}
+.room-window button:active,.enter-button:active{transform:scale(.94)}
+.quest-item.completed{animation:questDone .6s ease}
+@keyframes questDone{0%{transform:scale(.95)}50%{transform:scale(1.05)}100%{transform:scale(1.02)}}
+#meterBar{position:relative;overflow:hidden}
+#meterBar:after{content:"";position:absolute;top:0;left:-40%;width:35%;height:100%;background:rgba(255,255,255,.28);transform:skewX(-20deg);animation:meterShine 2.2s linear infinite}
+@keyframes meterShine{to{left:120%}}
+.game-card{animation:cardIn .7s ease both}
+.game-card:nth-child(2){animation-delay:.12s}.game-card:nth-child(3){animation-delay:.24s}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+#movingCoin{animation:coinSpin 1s linear infinite}
+@keyframes coinSpin{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.12)}100%{transform:rotate(360deg) scale(1)}}
+.crystal{animation:crystalGlow 2s infinite alternate,crystalFloat 2.8s ease-in-out infinite}
+@keyframes crystalFloat{0%,100%{margin-top:25px}50%{margin-top:17px}}
+.mystery-button{animation:mysteryPulse 2s ease-in-out infinite}
+@keyframes mysteryPulse{0%,100%{box-shadow:0 0 0 rgba(244,197,66,0)}50%{box-shadow:0 0 22px rgba(244,197,66,.35)}}
+.secret-door{animation:doorFloat 2s ease-in-out infinite}
+@keyframes doorFloat{50%{transform:translateY(-5px)}}
+.certificate-preview{animation:certificateReveal .8s ease both}
+@keyframes certificateReveal{from{opacity:0;transform:scale(.92) rotateX(8deg)}to{opacity:1;transform:none}}
+.download-certificate{animation:downloadPulse 2s ease-in-out infinite}
+@keyframes downloadPulse{50%{transform:translateY(-2px);box-shadow:0 10px 30px rgba(244,197,66,.4)}}
+.sound-wave{display:inline-block;min-width:20px;animation:soundWave .7s ease-in-out infinite}
+@keyframes soundWave{0%,100%{transform:scaleY(.7)}50%{transform:scaleY(1.3)}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+
+
+.rc-screen-flash{position:fixed;inset:0;background:rgba(244,197,66,.22);z-index:9998;pointer-events:none;animation:rcFlash .35s ease forwards}
+@keyframes rcFlash{from{opacity:1}to{opacity:0}}
+.rc-spark{position:fixed;z-index:10001;pointer-events:none;color:#f4c542;font-size:16px;animation:rcSpark .7s ease-out forwards}
+@keyframes rcSpark{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
+.rc-cursor-spark{position:fixed;z-index:9997;pointer-events:none;color:#f4c542;font-size:10px;animation:cursorSpark .5s ease-out forwards}
+@keyframes cursorSpark{to{transform:translateY(-12px) scale(0);opacity:0}}
+
+
+/* ================= NEW USER MANUAL ================= */
+#userManualOverlay{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(3,4,8,.82);
+    backdrop-filter:blur(10px);
+    animation:manualFadeIn .45s ease;
+}
+.user-manual{
+    width:min(680px,96vw);
+    max-height:88vh;
+    overflow:auto;
+    padding:30px;
+    border:1px solid rgba(244,197,66,.35);
+    border-radius:24px;
+    background:linear-gradient(145deg,rgba(24,25,35,.97),rgba(10,11,17,.98));
+    box-shadow:0 25px 80px rgba(0,0,0,.65),0 0 35px rgba(244,197,66,.10);
+    text-align:left;
+    position:relative;
+}
+.user-manual h2{
+    margin:0 0 6px;
+    text-align:center;
+    font-size:30px;
+}
+.user-manual .manual-subtitle{
+    text-align:center;
+    margin:0 0 22px;
+    opacity:.78;
+}
+.manual-step{
+    display:flex;
+    gap:13px;
+    align-items:flex-start;
+    padding:12px 0;
+    border-bottom:1px solid rgba(255,255,255,.07);
+}
+.manual-step:last-of-type{border-bottom:0}
+.manual-icon{font-size:25px;min-width:34px}
+.manual-step strong{display:block;margin-bottom:3px}
+.manual-step span{opacity:.78;line-height:1.45}
+.manual-start{
+    width:100%;
+    margin-top:20px;
+    padding:13px 18px;
+    border:0;
+    border-radius:13px;
+    background:linear-gradient(135deg,#f4c542,#d99b18);
+    color:#111;
+    font-weight:900;
+    font-size:15px;
+    cursor:pointer;
+    transition:.2s ease;
+}
+.manual-start:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 10px 25px rgba(244,197,66,.2)}
+.manual-powered{
+    text-align:center;
+    margin:18px 0 0;
+    padding-top:14px;
+    border-top:1px solid rgba(244,197,66,.16);
+    font-size:12px;
+    letter-spacing:.7px;
+    opacity:.68;
+}
+.manual-powered b{color:#f4c542;opacity:1}
+.manual-close{
+    position:absolute;
+    right:15px;
+    top:12px;
+    border:0;
+    background:transparent;
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+    opacity:.65;
+}
+.manual-close:hover{opacity:1;transform:scale(1.1)}
+@keyframes manualFadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+
+
+.powered-footer{
+    margin:45px 0 12px;
+    padding:16px 10px 5px;
+    border-top:1px solid rgba(244,197,66,.14);
+    text-align:center;
+    font-size:12px;
+    letter-spacing:1px;
+    opacity:.65;
+}
+.powered-footer b{color:#f4c542;opacity:1}
+
+</style>
+
+
+<style>
+.coin-comment{
+    margin-top:14px;
+    padding:10px 14px;
+    border:1px dashed rgba(244,197,66,.45);
+    border-radius:12px;
+    background:rgba(244,197,66,.07);
+    color:#f4c542;
+    font-size:14px;
+    line-height:1.45;
+    min-height:20px;
+}
+.coin-pop{
+    animation:coinPop .35s ease;
+}
+@keyframes coinPop{
+    0%{transform:translateX(0) scale(.96);opacity:.35}
+    60%{transform:translateX(8px) scale(1.02);opacity:1}
+    100%{transform:translateX(0) scale(1);opacity:1}
+}
+</style>
+
+<style>
+.certificate-preview{
+    max-width:760px;
+    margin:24px auto 14px;
+    padding:42px 48px 34px;
+    position:relative;
+    overflow:hidden;
+    border:2px solid #f4c542;
+    border-radius:18px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(244,197,66,.16), transparent 42%),
+      linear-gradient(145deg,#17130a,#0d0e13 55%,#17120a);
+    box-shadow:0 0 35px rgba(244,197,66,.18), inset 0 0 0 1px rgba(255,255,255,.05);
+    text-align:center;
+}
+.certificate-preview:before,.certificate-preview:after{
+    content:"✦";
+    position:absolute;
+    color:#f4c542;
+    font-size:30px;
+    opacity:.75;
+}
+.certificate-preview:before{top:14px;left:18px}
+.certificate-preview:after{bottom:10px;right:18px}
+.cert-kicker{letter-spacing:4px;font-size:12px;color:#b9b9c4;margin-bottom:8px}
+.cert-title{font-size:34px;letter-spacing:2px;color:#f4c542;font-weight:800;margin:4px 0 10px}
+.cert-subtitle{color:#d8d8df;font-size:15px;margin-bottom:20px}
+.cert-name{font-size:30px;font-weight:800;color:#fff;margin:10px 0 4px;border-bottom:1px solid rgba(244,197,66,.45);display:inline-block;padding:0 28px 8px}
+.cert-main{color:#c8c8d0;font-size:15px;line-height:1.6;margin:12px auto 24px;max-width:600px}
+.cert-footer{display:flex;justify-content:space-between;gap:24px;margin-top:20px;padding-top:18px;border-top:1px solid rgba(244,197,66,.3)}
+.cert-sign{flex:1;color:#fff;font-weight:800;letter-spacing:1px;font-size:14px}
+.cert-sign small{display:block;color:#999aa5;font-weight:400;letter-spacing:0;font-size:11px;margin-top:4px}
+.cert-seal{width:72px;height:72px;border:2px solid #f4c542;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f4c542;font-size:30px;margin:auto}
+.download-certificate{margin-top:12px;background:linear-gradient(135deg,#f4c542,#c89b1f);color:#101014;font-weight:800;border:0;box-shadow:0 8px 22px rgba(244,197,66,.2)}
+@media(max-width:650px){.certificate-preview{padding:30px 20px}.cert-title{font-size:25px}.cert-name{font-size:24px}.cert-footer{flex-direction:column}.cert-seal{order:-1}}
+</style>
+
+<style>
+.manual-big-icon{font-size:52px;margin-bottom:4px;animation:manualFloat 2s ease-in-out infinite}
+.manual-level{font-size:12px;font-weight:900;letter-spacing:3px;color:#f4c542;margin:4px 0 8px}
+.manual-current-step{border:1px solid rgba(244,197,66,.45);box-shadow:0 0 20px rgba(244,197,66,.10)}
+@keyframes manualFloat{50%{transform:translateY(-6px) rotate(-2deg)}}
+</style>
+
+
+<style>
+/* 🐔 Chicken Security Event */
+#recastellChicken{
+  position:fixed; left:-100px; bottom:80px; z-index:99999;
+  font-size:78px; cursor:pointer; user-select:none;
+  display:none; pointer-events:auto;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.35));
+}
+#recastellChicken.running{display:block;animation:recastellChickenRun 8s linear forwards;}
+@keyframes recastellChickenRun{
+  0%{left:-100px;transform:scaleX(1) rotate(0deg)}
+  30%{left:28%;transform:scaleX(1) rotate(-3deg)}
+  50%{left:50%;transform:scaleX(-1) rotate(3deg)}
+  70%{left:72%;transform:scaleX(-1) rotate(-3deg)}
+  100%{left:110%;transform:scaleX(-1) rotate(0deg)}
+}
+#recastellChickenMsg{
+  position:fixed;top:24px;left:50%;transform:translate(-50%,-25px);
+  z-index:100000;max-width:min(90vw,700px);padding:13px 20px;
+  border:1px solid rgba(244,197,66,.35);border-radius:14px;
+  background:rgba(12,13,18,.96);color:#fff;text-align:center;
+  font-weight:800;opacity:0;pointer-events:none;
+  box-shadow:0 12px 35px rgba(0,0,0,.35);
+}
+#recastellChickenMsg.show{animation:recastellChickenMsg 3s ease forwards;}
+@keyframes recastellChickenMsg{
+  0%{opacity:0;transform:translate(-50%,-25px)}
+  15%,80%{opacity:1;transform:translate(-50%,0)}
+  100%{opacity:0;transform:translate(-50%,-15px)}
+}
+#recastellChicken.running:hover{transform:scaleX(1.12) scaleY(1.12);}
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= STEP-BY-STEP USER MANUAL ================= -->
+<div id="userManualOverlay" role="dialog" aria-modal="true" aria-labelledby="manualTitle">
+    <div class="user-manual">
+        <button class="manual-close" onclick="closeUserManual()" aria-label="Close manual">✕</button>
+        <div id="manualIcon" class="manual-big-icon">🚪</div>
+        <div id="manualLevel" class="manual-level">LEVEL 1</div>
+        <h2 id="manualTitle">📜 ReCastell Mission Briefing</h2>
+        <p id="manualSubtitle" class="manual-subtitle">One instruction at a time. Complete the current level to unlock the next instruction. 😂</p>
+        <div id="manualContent" class="manual-step manual-current-step">
+            <div class="manual-icon">🚪</div>
+            <div><strong>Enter the Castle</strong><span>Click the ENTER RECASTELL button or the 🔒 lock. Then visit the Throne Room and become the King.</span></div>
+        </div>
+        <button id="manualAction" class="manual-start" onclick="closeUserManual()">🏰 GOT IT — START LEVEL 1!</button>
+        <div class="manual-powered">Powered by <b>SIDHARTH.K</b> &amp; <b>AJITH.KS</b></div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- ================= TITLE ================= -->
+
+    <h1>🏰 ReCastell</h1>
+
+    <p class="tagline">
+        <b>A Kingdom With Absolutely No Purpose</b>
+    </p>
+
+
+    <!-- ================= HOME ================= -->
+
+    <div id="home">
+
+        <div class="castle-icon">
+            🏰
+        </div>
+
+        <div class="welcome-text">
+
+            <h2>
+                Welcome Traveller!
+            </h2>
+
+            <p>
+                Are you ready to waste your time?
+            </p>
+
+        </div>
+
+
+        <!-- CASTLE GATE -->
+
+        <div id="castle-wall">
+
+            <div class="castle-tower tower-left"></div>
+
+            <div class="castle-tower tower-right"></div>
+
+
+            <div class="gate-area" id="castleGate">
+
+                <div class="gate gate-left"></div>
+
+                <div class="gate gate-right"></div>
+
+                <div class="gate-handle" id="gateLock" onclick="enterCastle()" title="Click the lock to enter ReCastell">
+                    🔒
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="enter-button"
+            onclick="enterCastle()">
+
+            🚪 ENTER RECASTELL
+
+        </button>
+
+    </div>
+
+
+    <!-- ================= CASTLE PAGE ================= -->
+
+    <div id="castlePage">
+
+<div id="celebration" aria-hidden="true"></div>
+
+        <h2 class="castle-title">
+            🏰 Welcome Inside ReCastell!
+        </h2>
+
+        <p class="subtitle">
+            Explore our completely useless castle 😂
+        </p>
+
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="stat-number" id="coins">
+                    0
+                </div>
+
+                💰 Useless Coins
+
+            </div>
+
+
+            <div class="stat">
+
+                <div
+                    class="stat-number"
+                    id="uselessLevel">
+
+                    0%
+
+                </div>
+
+                📈 Uselessness
+
+            </div>
+
+        </div>
+
+<!-- ================= CASTLE QUEST ================= -->
+
+<div class="quest-panel">
+
+    <h2>📜 CASTLE QUEST</h2>
+
+    <p>Complete these completely unnecessary missions!</p>
+
+    <div class="quest-list">
+
+        <div class="quest-item" id="quest1">
+            <span>⬜</span>
+            <b>Become the King</b>
+            <small>Visit the Throne Room</small>
+        </div>
+
+        <div class="quest-item" id="quest2">
+            <span>⬜</span>
+            <b>Collect a Useless Coin</b>
+            <small>Find the Treasure</small>
+        </div>
+
+        <div class="quest-item" id="quest3">
+            <span>⬜</span>
+            <b>Ask the Wizard</b>
+            <small>Visit the Wizard Tower</small>
+        </div>
+
+    </div>
+
+    <div class="quest-progress">
+        Quest Progress:
+        <strong id="questProgress">0 / 3</strong>
+    </div>
+
+    <div id="questMessage">
+        Your useless adventure begins! 🏰
+    </div>
+
+    <div id="questReward">
+    🎁 Reward: Nothing... yet!
+</div>
+</div>
+        <!-- ================= MAP ================= -->
+
+        <div class="castle-map">
+
+    <h2 class="map-title">🗺️ EXPLORE RECASTELL</h2>
+
+    <p class="map-subtitle">
+        Choose your destination... if you really have nothing better to do.
+    </p>
+
+    <div class="game-castle">
+
+        <div class="corner-tower top-left">🗼</div>
+        <div class="corner-tower top-right">🗼</div>
+        <div class="corner-tower bottom-left">🗼</div>
+        <div class="corner-tower bottom-right">🗼</div>
+
+        <div class="map-room throne-room"
+             onclick="showRoom('throne')">
+            <div class="room-symbol">👑</div>
+            <div class="room-name">THRONE ROOM</div>
+        </div>
+
+        <div class="map-room wizard-room"
+             onclick="showRoom('wizard')">
+            <div class="room-symbol">🧙</div>
+            <div class="room-name">WIZARD TOWER</div>
+        </div>
+
+        <div class="map-room treasure-room"
+             onclick="showRoom('treasure')">
+            <div class="room-symbol">💰</div>
+            <div class="room-name">TREASURE</div>
+        </div>
+
+        <div class="map-room secret-room"
+     onclick="openSecretRoom()">
+            <div class="room-symbol">❓</div>
+            <div class="room-name">SECRET ROOM</div>
+        </div>
+
+        <div class="map-room certificate-map-room"
+             onclick="showRoom('certificate')">
+            <div class="room-symbol">🏆</div>
+            <div class="room-name">HALL OF USELESSNESS</div>
+        </div>
+
+        <div class="central-castle-hall">
+            <div class="hall-symbol">🏰</div>
+            <h2>RECASTELL</h2>
+            <p>Kingdom of Absolutely Nothing</p>
+        </div>
+
+        <div class="path path-1"></div>
+        <div class="path path-2"></div>
+        <div class="path path-3"></div>
+        <div class="path path-4"></div>
+
+        <div class="player">🧍</div>
+
+        <div class="main-gate">
+            🚪
+            <span>MAIN GATE</span>
+        </div>
+
+    </div>
+</div>
+        <!-- ================= ROOM WINDOW ================= -->
+
+        <div
+            class="room-window"
+            id="roomWindow">
+
+
+            <!-- THRONE -->
+
+            <div id="throneRoom">
+
+                <h2>
+                    👑 Throne Room
+                </h2>
+
+                <p id="kingMessage">
+                    Nobody is the King yet.
+                </p>
+
+                <button onclick="becomeKing()">
+                    👑 BECOME KING
+                </button>
+
+            </div>
+
+
+            <!-- TREASURE -->
+
+            <div id="treasureRoom">
+
+                <h2>
+                    💰 Treasure Room
+                </h2>
+
+                <p>
+                    Collect completely useless coins.
+                </p>
+
+                <button onclick="collectCoin()">
+                    💰 COLLECT COIN
+                </button>
+
+                <p id="coinComment" class="coin-comment">
+                    The treasury is waiting for your completely useless wealth. 😂
+                </p>
+
+            </div>
+
+
+            <!-- WIZARD -->
+
+            <div id="wizardRoom">
+
+                <h2>
+                    🧙 Wizard Room
+                </h2>
+
+                <p id="wizardMessage">
+                    The wizard is sleeping...
+                </p>
+
+                <button onclick="askWizard()">
+                    🧙 ASK WIZARD
+                </button>
+
+            </div>
+<button class="back-button" onclick="closeRoom()">
+    ← BACK TO MAP
+</button>
+
+            <!-- SECRET -->
+
+            <div id="secretRoom">
+<!-- SECRET CASTLE CHAMBER -->
+
+<div class="secret-castle">
+
+    <div class="secret-title">
+        🔮 THE FORBIDDEN CHAMBER 🔮
+    </div>
+
+    <p class="secret-subtitle">
+        You found the most unnecessary place in ReCastell...
+    </p>
+
+    <div class="crystal">
+        🔮
+    </div>
+
+    <div class="secret-warning">
+        ⚠️ WARNING ⚠️
+        <br>
+        This room contains absolutely nothing useful.
+    </div>
+
+    <button class="mystery-button" onclick="secretButton()">
+        ⚡ ACTIVATE THE USELESS MACHINE
+    </button>
+
+    <div id="secretMessage" class="secret-message">
+        The ancient machine is sleeping...
+    </div>
+
+    <div class="secret-door">
+        🚪
+        <span>SECRET EXIT</span>
+    </div>
+
+</div>
+
+</div>
+
+            </div>
+
+
+            <!-- CERTIFICATE -->
+
+            <div id="certificateRoom">
+
+                <h2>🏆 Certificate of Uselessness</h2>
+                <p>Generate your official ReCastell certificate.</p>
+
+                <input
+                    type="text"
+                    id="userName"
+                    placeholder="Enter your name">
+
+                <br>
+
+                <button onclick="generateCertificate()">
+                    🏆 GET CERTIFICATE
+                </button>
+
+                <div id="certificateCard" class="certificate-preview" style="display:none;">
+                    <div class="cert-kicker">RECASTELL • USELESS PROJECT 3.0</div>
+                    <div class="cert-title">CERTIFICATE OF USELESSNESS</div>
+                    <div class="cert-subtitle">This certificate proudly confirms that</div>
+                    <div id="certDisplayName" class="cert-name">CERTIFIED VISITOR</div>
+                    <div class="cert-main">has successfully explored the kingdom, collected unnecessary treasure, and demonstrated an outstanding commitment to doing absolutely nothing useful.</div>
+                    <div class="cert-seal">🏰</div>
+                    <div class="cert-footer">
+                        <div class="cert-sign">SIDHARTH.K<small>Project Creator</small></div>
+                        <div class="cert-sign">AJITH KS<small>Project Creator</small></div>
+                    </div>
+                </div>
+
+                <button id="downloadCertificateBtn" class="download-certificate" onclick="downloadCertificate()" style="display:none;">
+                    ⬇️ DOWNLOAD CERTIFICATE
+                </button>
+
+                <p id="certificateMessage"></p>
+
+            </div>
+
+
+            <br>
+
+            <button
+                class="back-button"
+                onclick="closeRoom()">
+
+                ⬅ BACK TO MAP
+
+            </button>
+
+        </div>
+<!-- ================= MINI GAMES ================= -->
+
+<div class="games-section">
+
+    <h2>🎮 USELESS MINI GAMES</h2>
+    <p>Play games that have absolutely no purpose! 😂</p>
+
+    <div class="games-container">
+
+        <!-- GAME 1 -->
+        <div class="game-card">
+
+            <div class="game-icon">💰</div>
+
+            <h3>Catch The Coin</h3>
+
+            <p>Click the coin before it escapes!</p>
+
+            <div id="coinGameArea">
+
+                <button
+                    id="movingCoin"
+                    onclick="catchCoin()">
+                    💰
+                </button>
+
+            </div>
+
+            <p id="coinGameMessage">
+                Click the coin!
+            </p>
+
+            <button onclick="startCoinGame()">
+                ▶ START GAME
+            </button>
+
+        </div>
+
+
+        <!-- GAME 2 -->
+        <div class="game-card">
+
+            <div class="game-icon">😂</div>
+
+            <h3>Useless Button</h3>
+
+            <p>Click the button 10 times.</p>
+
+            <button
+                id="uselessButton"
+                onclick="pressUselessButton()">
+                CLICK ME!
+            </button>
+
+            <p id="clickCount">
+                Clicks: 0 / 10
+            </p>
+
+        </div>
+
+
+        <!-- GAME 3 -->
+        <div class="game-card">
+
+            <div class="game-icon">🧙</div>
+
+            <h3>Wizard Question</h3>
+
+            <p>Answer the most useless question.</p>
+
+            <button onclick="uselessQuestion()">
+                🧙 ASK QUESTION
+            </button>
+
+            <p id="questionMessage">
+                The wizard is waiting...
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+        <!-- ================= METER ================= -->
+
+        <div class="meter-box">
+
+            <h2>
+                📊 Uselessness Meter
+            </h2>
+
+            <div class="meter">
+
+                <div id="meterBar"></div>
+
+            </div>
+
+            <p id="meterText">
+                You are only 0% useless.
+            </p>
+
+        </div>
+
+
+        <!-- RESET -->
+
+        <button
+            class="reset-button"
+            onclick="resetCastle()">
+
+            🔄 RESET CASTLE
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+
+<script>
+
+let coins = 0;
+let uselessLevel = 0;
+let completedQuests = 0;
+
+/* ================= ENTER CASTLE ================= */
+
+function enterCastle() {
+    const gate = document.getElementById("castleGate");
+    const home = document.getElementById("home");
+    const castlePage = document.getElementById("castlePage");
+
+    if (!gate || !home || !castlePage) return;
+
+    gate.classList.add("open");
+
+    const lock = document.getElementById("gateLock");
+    if (lock) {
+        lock.classList.add("unlocked");
+        lock.textContent = "🔓";
+    }
+
+    setTimeout(function () {
+        home.style.display = "none";
+        castlePage.style.display = "block";
+        increaseUselessness(10);
+
+        const map = document.querySelector(".castle-map");
+        if (map) {
+            map.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }, 1200);
+}
+
+/* ================= QUEST SYSTEM ================= */
+
+function completeQuest(number) {
+
+    const quest = document.getElementById("quest" + number);
+    if (!quest || quest.classList.contains("completed")) return;
+
+    quest.classList.add("completed");
+
+    const icon = quest.querySelector("span");
+    if (icon) icon.textContent = "✅";
+
+    completedQuests++;
+
+    // Real reward: +10 coins
+    coins += 10;
+
+    const coinCounter = document.getElementById("coins");
+    if (coinCounter) coinCounter.textContent = coins;
+
+    const progress = document.getElementById("questProgress");
+    if (progress) progress.textContent = completedQuests + " / 3";
+
+    const reward = document.getElementById("questReward");
+    if (reward) {
+        reward.textContent = "🎁 Reward unlocked: +10 Useless Coins!";
+        reward.classList.remove("reward-active");
+        void reward.offsetWidth;
+        reward.classList.add("reward-active");
+    }
+
+    const message = document.getElementById("questMessage");
+
+    if (completedQuests < 3) {
+        if (message) {
+            message.textContent =
+                "✅ Quest completed! " +
+                (3 - completedQuests) +
+                " quest" +
+                (3 - completedQuests === 1 ? "" : "s") +
+                " left.";
+        }
+
+        increaseUselessness(10);
+    } else {
+        if (message) {
+            message.textContent =
+                "🎉 ALL QUESTS COMPLETE! You are officially useless! 👑";
+        }
+
+        increaseUselessness(20);
+        celebrateCastle();
+    }
+}
+
+/* ================= CELEBRATION ================= */
+
+function celebrateCastle() {
+
+    const celebration = document.getElementById("celebration");
+    if (!celebration) return;
+
+    celebration.innerHTML = "";
+    celebration.setAttribute("aria-hidden", "false");
+
+    // Confetti pieces
+    for (let i = 0; i < 100; i++) {
+        const piece = document.createElement("span");
+        piece.className = "confetti";
+
+        piece.style.left = Math.random() * 100 + "%";
+        piece.style.animationDelay = Math.random() * 1.2 + "s";
+        piece.style.animationDuration =
+            (2.5 + Math.random() * 2) + "s";
+
+        celebration.appendChild(piece);
+    }
+
+    // Glitter
+    for (let i = 0; i < 45; i++) {
+        const glitter = document.createElement("span");
+        glitter.className = "glitter";
+        glitter.textContent = "✨";
+
+        glitter.style.left = Math.random() * 100 + "%";
+        glitter.style.animationDelay = Math.random() * 1.3 + "s";
+
+        celebration.appendChild(glitter);
+    }
+
+    // User-friendly popup
+    const popup = document.createElement("div");
+    popup.className = "congrats-popup";
+
+    popup.innerHTML = `
+        <div class="popup-trophy">🏆</div>
+        <h2>🎉 CONGRATULATIONS! 🎉</h2>
+        <p>You completed all 3 ReCastell quests!</p>
+        <strong>👑 You are officially useless!</strong>
+        <button type="button" onclick="closeCelebration()">
+            CONTINUE EXPLORING
+        </button>
+    `;
+
+    celebration.appendChild(popup);
+
+    setTimeout(function () {
+        closeCelebration();
+    }, 6000);
+}
+
+function closeCelebration() {
+    const celebration = document.getElementById("celebration");
+
+    if (!celebration) return;
+
+    celebration.innerHTML = "";
+    celebration.setAttribute("aria-hidden", "true");
+}
+
+/* ================= SECRET ROOM ================= */
+
+function openSecretRoom() {
+
+    if (completedQuests < 3) {
+        const message = document.getElementById("questMessage");
+
+        if (message) {
+            message.textContent =
+                "🔒 Secret Room locked — complete all 3 quests first.";
+        }
+
+        alert(
+            "🔒 SECRET ROOM LOCKED!\n\n" +
+            "Complete all 3 Castle Quests first."
+        );
+
+        return;
+    }
+
+    showRoom("secret");
+
+    const message = document.getElementById("questMessage");
+    if (message) {
+        message.textContent =
+            "🔓 Secret Room unlocked! You found the forbidden uselessness! 👀";
+    }
+
+    increaseUselessness(15);
+}
+
+function secretButton() {
+
+    const messages = [
+        "😐 Nothing happened.",
+        "🤨 Still nothing.",
+        "😂 You really pressed it?",
+        "🏰 The castle is impressed.",
+        "🫠 Absolutely useless!",
+        "🎉 Congratulations! You achieved nothing!"
+    ];
+
+    const message = document.getElementById("secretMessage");
+
+    if (message) {
+        message.textContent =
+            messages[Math.floor(Math.random() * messages.length)];
+    }
+
+    increaseUselessness(5);
+}
+
+/* ================= MAP / ROOMS ================= */
+
+function showRoom(roomName) {
+
+    const windowBox = document.getElementById("roomWindow");
+
+    const roomIds = [
+        "throneRoom",
+        "treasureRoom",
+        "wizardRoom",
+        "secretRoom",
+        "certificateRoom"
+    ];
+
+    if (!windowBox) return;
+
+    roomIds.forEach(function (id) {
+        const room = document.getElementById(id);
+        if (room) room.style.display = "none";
+    });
+
+    const selectedRoom =
+        document.getElementById(roomName + "Room");
+
+    if (!selectedRoom) {
+        console.log("Room not found:", roomName);
+        return;
+    }
+
+    selectedRoom.style.display = "block";
+    windowBox.style.display = "block";
+
+    windowBox.classList.remove("room-flash");
+    void windowBox.offsetWidth;
+    windowBox.classList.add("room-flash");
+
+    windowBox.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    increaseUselessness(3);
+}
+
+function closeRoom() {
+
+    const windowBox = document.getElementById("roomWindow");
+
+    if (windowBox) {
+        windowBox.style.display = "none";
+    }
+
+    const map = document.querySelector(".castle-map");
+
+    if (map) {
+        map.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
+    /* Show the current instruction ONLY after pressing BACK TO MAP. */
+    setTimeout(function(){
+        const currentLevel = Math.min(Number(completedQuests) + 1, 4);
+        showLevelGuide(currentLevel);
+    }, 450);
+}
+
+/* ================= KING ================= */
+
+function becomeKing() {
+
+    completeQuest(1);
+
+    const message = document.getElementById("kingMessage");
+
+    if (message) {
+        message.innerText =
+            "👑 Congratulations! You are now King of ReCastell! But you have ZERO powers. 😂";
+    }
+
+    increaseUselessness(10);
+}
+
+/* ================= COIN ================= */
+
+function collectCoin() {
+
+    completeQuest(2);
+
+    coins++;
+
+    const counter = document.getElementById("coins");
+    if (counter) counter.innerText = coins;
+
+    const roomCoins = document.getElementById("roomCoins");
+    if (roomCoins) roomCoins.innerText = coins;
+
+    const coinComments = [
+        "💰 Nice! You are now 1 coin richer and 0 rupees richer. 😂",
+        "🤑 TREASURY UPDATE: Your wealth is still emotionally priceless. 😂",
+        "🏦 Bank manager says: Please stop depositing these useless coins.",
+        "💸 Congratulations! You have successfully collected money nobody wants.",
+        "👑 The King approves this financially questionable decision.",
+        "📈 Your investment portfolio is up by 1 useless coin. Wall Street is shaking.",
+        "💰 Jackpot! ...Actually, it's just one coin. Calm down. 😂",
+        "🚨 CASTLE ALERT: Someone is getting rich! It is unfortunately you.",
+        "🪙 Coin collected! Its market value is approximately... absolutely nothing.",
+        "🎉 Financial freedom unlocked! Monthly income: still zero. 😂",
+        "💼 Congratulations, CEO! You now own another completely unnecessary asset.",
+        "🏆 Achievement unlocked: Professional Coin Picker.",
+        "🧙 Wizard says: Spend it wisely. The wizard has no idea what it is worth.",
+        "😂 You found treasure! Please don't ask where the treasure came from.",
+        "💰 Another coin! At this rate, you might afford half a potato."
+    ];
+
+    const comment = coinComments[Math.floor(Math.random() * coinComments.length)];
+    const commentBox = document.getElementById("coinComment");
+    if (commentBox) {
+        commentBox.innerText = comment;
+        commentBox.classList.remove("coin-pop");
+        void commentBox.offsetWidth;
+        commentBox.classList.add("coin-pop");
+    }
+
+    if (typeof rcToast === "function") {
+        rcToast(comment);
+    }
+
+    increaseUselessness(5);
+}
+
+/* ================= WIZARD ================= */
+
+function askWizard() {
+
+    completeQuest(3);
+
+    const messages = [
+        "🧙 Do absolutely nothing.",
+        "🧙 Touch some grass.",
+        "🧙 Why are you still here?",
+        "🧙 Your mission is to find the purpose of this castle.",
+        "🧙 Congratulations! You wasted your time.",
+        "🧙 The answer is... there is no answer.",
+        "🧙 You came here for this? Seriously? 😂"
+    ];
+
+    const message = document.getElementById("wizardMessage");
+
+    if (message) {
+        message.innerText =
+            messages[Math.floor(Math.random() * messages.length)];
+    }
+
+    increaseUselessness(10);
+}
+
+/* ================= SECRET DOOR ================= */
+
+function openSecretDoor() {
+
+    const message = document.getElementById("doorMessage");
+
+    if (!message) return;
+
+    message.innerText = "🚪 Opening the secret door...";
+
+    setTimeout(function () {
+        message.innerText =
+            "😂 Congratulations! You opened the secret door and found absolutely NOTHING!";
+    }, 1200);
+
+    increaseUselessness(15);
+}
+
+/* ================= USELESSNESS ================= */
+
+function increaseUselessness(amount) {
+    // The meter follows gameplay progress, but normal actions can never
+    // finish the whole journey. 100% is reserved for completing the
+    // complete ReCastell experience / certificate.
+    uselessLevel += amount;
+
+    if (uselessLevel > 90) {
+        uselessLevel = 90;
+    }
+
+    updateUselessnessMeter();
+}
+
+function updateUselessnessMeter() {
+    const level = document.getElementById("uselessLevel");
+    const bar = document.getElementById("meterBar");
+    const text = document.getElementById("meterText");
+
+    if (level) level.innerText = uselessLevel + "%";
+    if (bar) bar.style.width = uselessLevel + "%";
+
+    if (text) {
+        if (uselessLevel >= 80) {
+            text.innerText = "🔥 Almost maximum uselessness! Complete the final task!";
+        } else if (uselessLevel >= 60) {
+            text.innerText = "😂 Serious progress towards complete uselessness.";
+        } else if (uselessLevel >= 30) {
+            text.innerText = "😎 You are becoming professionally useless.";
+        } else {
+            text.innerText = "🏰 Your useless journey has just begun.";
+        }
+    }
+}
+
+function completeUselessness() {
+    // Only finishing the complete gameplay journey can reach 100%.
+    uselessLevel = 100;
+    updateUselessnessMeter();
+}
+
+/* ================= CERTIFICATE ================= */
+
+function generateCertificate() {
+
+    const input = document.getElementById("userName");
+    const message = document.getElementById("certificateMessage");
+    const card = document.getElementById("certificateCard");
+    const displayName = document.getElementById("certDisplayName");
+    const downloadBtn = document.getElementById("downloadCertificateBtn");
+
+    if (!input || !message || !card || !displayName || !downloadBtn) return;
+
+    const name = input.value.trim();
+
+    if (name === "") {
+        message.innerText = "⚠️ Please enter your name!";
+        card.style.display = "none";
+        downloadBtn.style.display = "none";
+        return;
+    }
+
+    displayName.innerText = name;
+    card.style.display = "block";
+    downloadBtn.style.display = "inline-block";
+    message.innerText = "🎉 Certificate generated! Now download your useless achievement.";
+
+    completeUselessness();
+}
+
+function downloadCertificate() {
+    const name = (document.getElementById("userName")?.value || "Certified Visitor").trim();
+    const safeName = name.replace(/[^a-z0-9_-]+/gi, "_").replace(/^_+|_+$/g, "") || "Certified_Visitor";
+
+    const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17130a"/><stop offset="0.55" stop-color="#0d0e13"/><stop offset="1" stop-color="#17120a"/></linearGradient>
+  <radialGradient id="glow"><stop offset="0" stop-color="#f4c542" stop-opacity=".22"/><stop offset="1" stop-color="#f4c542" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1200" height="850" fill="url(#bg)"/>
+<circle cx="600" cy="40" r="430" fill="url(#glow)"/>
+<rect x="28" y="28" width="1144" height="794" rx="24" fill="none" stroke="#f4c542" stroke-width="4"/>
+<rect x="48" y="48" width="1104" height="754" rx="18" fill="none" stroke="#f4c542" stroke-opacity=".28" stroke-width="2"/>
+<text x="600" y="120" text-anchor="middle" fill="#b9b9c4" font-family="Arial,sans-serif" font-size="18" letter-spacing="6">RECASTELL • USELESS PROJECT 3.0</text>
+<text x="600" y="190" text-anchor="middle" fill="#f4c542" font-family="Georgia,serif" font-size="48" font-weight="700" letter-spacing="3">CERTIFICATE OF USELESSNESS</text>
+<text x="600" y="245" text-anchor="middle" fill="#d8d8df" font-family="Arial,sans-serif" font-size="21">This certificate proudly confirms that</text>
+<text x="600" y="335" text-anchor="middle" fill="#ffffff" font-family="Georgia,serif" font-size="46" font-weight="700">${escapeXml(name)}</text>
+<line x1="300" y1="355" x2="900" y2="355" stroke="#f4c542" stroke-opacity=".55"/>
+<text x="600" y="410" text-anchor="middle" fill="#c8c8d0" font-family="Arial,sans-serif" font-size="20">has successfully explored the kingdom, collected unnecessary treasure,</text>
+<text x="600" y="442" text-anchor="middle" fill="#c8c8d0" font-family="Arial,sans-serif" font-size="20">and demonstrated an outstanding commitment to doing absolutely nothing useful.</text>
+<circle cx="600" cy="535" r="55" fill="none" stroke="#f4c542" stroke-width="3"/>
+<text x="600" y="550" text-anchor="middle" font-size="45">🏰</text>
+<line x1="160" y1="690" x2="500" y2="690" stroke="#f4c542" stroke-opacity=".4"/>
+<line x1="700" y1="690" x2="1040" y2="690" stroke="#f4c542" stroke-opacity=".4"/>
+<text x="330" y="730" text-anchor="middle" fill="#ffffff" font-family="Arial,sans-serif" font-size="22" font-weight="700">SIDHARTH.K</text>
+<text x="870" y="730" text-anchor="middle" fill="#ffffff" font-family="Arial,sans-serif" font-size="22" font-weight="700">AJITH KS</text>
+<text x="330" y="758" text-anchor="middle" fill="#999aa5" font-family="Arial,sans-serif" font-size="15">Project Creator</text>
+<text x="870" y="758" text-anchor="middle" fill="#999aa5" font-family="Arial,sans-serif" font-size="15">Project Creator</text>
+</svg>`;
+
+    const blob = new Blob([svg], {type: "image/svg+xml;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ReCastell_Certificate_" + safeName + ".svg";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+}
+
+function escapeXml(value) {
+    return String(value).replace(/[<>&'"]/g, function(ch) {
+        return ({"<":"&lt;", ">":"&gt;", "&":"&amp;", "'":"&apos;", '"':"&quot;"})[ch];
+    });
+}
+
+/* ================= RESET ================= */
+
+function resetCastle() {
+
+    if (!confirm(
+        "Reset your ReCastell progress?\n\n" +
+        "Your coins, quests and uselessness will return to zero."
+    )) {
+        return;
+    }
+
+    coins = 0;
+    uselessLevel = 0;
+    completedQuests = 0;
+    uselessClicks = 0;
+
+    const coinCounter = document.getElementById("coins");
+    if (coinCounter) coinCounter.innerText = "0";
+
+    const level = document.getElementById("uselessLevel");
+    if (level) level.innerText = "0%";
+
+    const bar = document.getElementById("meterBar");
+    if (bar) bar.style.width = "0%";
+
+    const meterText = document.getElementById("meterText");
+    if (meterText) meterText.innerText = "You are only 0% useless.";
+
+    const progress = document.getElementById("questProgress");
+    if (progress) progress.innerText = "0 / 3";
+
+    const questMessage = document.getElementById("questMessage");
+    if (questMessage) {
+        questMessage.innerText =
+            "Your useless adventure begins! 🏰";
+    }
+
+    const reward = document.getElementById("questReward");
+    if (reward) {
+        reward.innerText = "🎁 Reward: Nothing... yet!";
+    }
+
+    document.querySelectorAll(".quest-item").forEach(function (quest) {
+        quest.classList.remove("completed");
+
+        const icon = quest.querySelector("span");
+        if (icon) icon.textContent = "⬜";
+    });
+
+    const king = document.getElementById("kingMessage");
+    if (king) king.innerText = "Nobody is the King yet.";
+
+    const wizard = document.getElementById("wizardMessage");
+    if (wizard) wizard.innerText = "The wizard is sleeping...";
+
+    const door = document.getElementById("doorMessage");
+    if (door) {
+        door.innerText =
+            "Nobody knows what is behind this door.";
+    }
+
+    const certificate =
+        document.getElementById("certificateMessage");
+    if (certificate) certificate.innerText = "";
+
+    const name = document.getElementById("userName");
+    if (name) name.value = "";
+
+    closeCelebration();
+    closeRoom();
+
+    const castlePage =
+        document.getElementById("castlePage");
+    const home = document.getElementById("home");
+    const gate = document.getElementById("castleGate");
+
+    if (castlePage) castlePage.style.display = "none";
+    if (home) home.style.display = "block";
+    if (gate) gate.classList.remove("open");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* ================= MINI GAME 1 ================= */
+
+let coinGameTimer;
+let coinGameRunning = false;
+
+
+function startCoinGame(){
+
+    const coin =
+        document.getElementById("movingCoin");
+
+    const message =
+        document.getElementById("coinGameMessage");
+
+    coinGameRunning = true;
+
+    message.innerText =
+        "💰 Catch it!";
+
+    moveCoin();
+
+    clearTimeout(coinGameTimer);
+
+    coinGameTimer = setTimeout(function(){
+
+        if(coinGameRunning){
+
+            coinGameRunning = false;
+
+            message.innerText =
+                "😂 Too slow! The useless coin escaped!";
+
+        }
+
+    },10000);
+
+}
+
+
+function moveCoin(){
+
+    if(!coinGameRunning) return;
+
+    const area =
+        document.getElementById("coinGameArea");
+
+    const coin =
+        document.getElementById("movingCoin");
+
+    const maxX =
+        area.clientWidth - 55;
+
+    const maxY =
+        area.clientHeight - 55;
+
+    const x =
+        Math.random() * maxX;
+
+    const y =
+        Math.random() * maxY;
+
+    coin.style.left = x + "px";
+
+    coin.style.top = y + "px";
+
+}
+
+
+function catchCoin(){
+
+    if(!coinGameRunning) return;
+
+    coinGameRunning = false;
+
+    clearTimeout(coinGameTimer);
+
+    coins++;
+
+    document.getElementById("coins")
+        .innerText = coins;
+
+    document.getElementById("coinGameMessage")
+        .innerText =
+        "🎉 You caught the useless coin!";
+
+    increaseUselessness(10);
+
+}
+
+
+/* ================= MINI GAME 2 ================= */
+
+let uselessClicks = 0;
+
+
+let uselessButtonLocked = false;
+
+function pressUselessButton(){
+    if(uselessButtonLocked) return;
+
+    uselessClicks++;
+
+    document.getElementById("clickCount")
+        .innerText =
+        "Clicks: " +
+        uselessClicks +
+        " / 10";
+
+    increaseUselessness(2);
+
+    if(uselessClicks >= 10){
+        uselessButtonLocked = true;
+
+        document.getElementById("clickCount")
+            .innerText =
+            "⏳ 10 useless clicks completed... calculating absolutely nothing...";
+
+        // Wait exactly 3 seconds before showing the final message.
+        setTimeout(function(){
+            document.getElementById("clickCount")
+                .innerText =
+                "😂 Congratulations! You clicked a button 10 times for absolutely no reason!";
+
+            uselessClicks = 0;
+            uselessButtonLocked = false;
+        }, 3000);
+    }
+}
+
+
+/* ================= MINI GAME 3 ================= */
+
+function uselessQuestion(){
+
+    const questions = [
+
+        "🧙 Why did you enter ReCastell?",
+
+        "🧙 What is the purpose of this castle?",
+
+        "🧙 Is there any treasure here?",
+
+        "🧙 Are you actually doing something useful?",
+
+        "🧙 Should you go outside and touch some grass?",
+
+        "🧙 Why are you still playing this game?"
+
+    ];
+
+
+    const answers = [
+
+        "😂 Nobody knows!",
+
+        "🏰 Absolutely nothing!",
+
+        "💰 Maybe... but probably not!",
+
+        "❌ Definitely not!",
+
+        "🌱 Yes. But you probably won't.",
+
+        "😂 That's a very good question!"
+
+    ];
+
+
+    const random =
+        Math.floor(
+            Math.random() *
+            questions.length
+        );
+
+
+    document.getElementById("questionMessage")
+        .innerText =
+        questions[random] +
+        "\n\n" +
+        answers[random];
+
+
+    increaseUselessness(5);
+
+}
+
+/* ================= SOUND + INTERACTION FX PACK ================= */
+let rcAudioCtx=null;
+function rcAudio(){
+  if(!rcAudioCtx) rcAudioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(rcAudioCtx.state==="suspended") rcAudioCtx.resume();
+  return rcAudioCtx;
+}
+function rcTone(freq,duration=.09,type="sine",volume=.035,delay=0){
+  try{
+    const c=rcAudio(),o=c.createOscillator(),g=c.createGain();
+    o.type=type;o.frequency.setValueAtTime(freq,c.currentTime+delay);
+    g.gain.setValueAtTime(.0001,c.currentTime+delay);
+    g.gain.exponentialRampToValueAtTime(volume,c.currentTime+delay+.01);
+    g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+delay+duration);
+    o.connect(g);g.connect(c.destination);o.start(c.currentTime+delay);o.stop(c.currentTime+delay+duration+.02);
+  }catch(e){}
+}
+function rcSound(kind){
+  if(kind==="click"){rcTone(520,.06,"square",.018);rcTone(760,.07,"square",.014,.04)}
+  else if(kind==="unlock"){rcTone(330,.12,"sine",.03);rcTone(494,.12,"sine",.03,.11);rcTone(660,.2,"sine",.035,.22)}
+  else if(kind==="coin"){rcTone(740,.07,"triangle",.035);rcTone(1040,.12,"triangle",.03,.07)}
+  else if(kind==="quest"){rcTone(523,.1,"triangle",.03);rcTone(659,.1,"triangle",.03,.1);rcTone(784,.22,"triangle",.04,.2)}
+  else if(kind==="magic"){rcTone(392,.12,"sine",.025);rcTone(587,.12,"sine",.025,.12);rcTone(880,.25,"sine",.03,.24)}
+  else if(kind==="error"){rcTone(180,.16,"sawtooth",.025);rcTone(120,.18,"sawtooth",.02,.12)}
+  else if(kind==="win"){[523,659,784,1047].forEach((f,i)=>rcTone(f,.16,"triangle",.035,i*.12))}
+  else if(kind==="whoosh"){rcTone(220,.12,"sawtooth",.018);rcTone(500,.16,"sawtooth",.012,.08)}
+}
+function rcFlash(){
+  const f=document.createElement("div");f.className="rc-screen-flash";document.body.appendChild(f);
+  setTimeout(()=>f.remove(),350);
+}
+function rcSpark(x,y){
+  for(let i=0;i<8;i++){
+    const s=document.createElement("span");s.className="rc-spark";s.textContent=["✦","✨","•"][i%3];
+    s.style.left=x+"px";s.style.top=y+"px";s.style.setProperty("--dx",(Math.random()*100-50)+"px");s.style.setProperty("--dy",(Math.random()*100-50)+"px");
+    document.body.appendChild(s);setTimeout(()=>s.remove(),700);
+  }
+}
+document.addEventListener("click",e=>{
+  const el=e.target.closest("button,.map-room,.gate-handle");
+  if(!el)return;
+  rcSound("click");rcSpark(e.clientX,e.clientY);
+});
+const oldEnterCastle=enterCastle;
+enterCastle=function(){
+  rcSound("unlock");rcFlash();
+  const lock=document.getElementById("gateLock");
+  if(lock)lock.classList.add("unlocked");
+  oldEnterCastle();
+};
+const oldCompleteQuest=completeQuest;
+completeQuest=function(n){
+  const before=document.getElementById("quest"+n);
+  const wasCompleted=before && before.classList.contains("completed");
+  oldCompleteQuest(n);
+  rcSound("quest");
+  /* The next instruction is shown only when BACK TO MAP is pressed. */
+};
+const oldCollectCoin=collectCoin;
+collectCoin=function(){oldCollectCoin();rcSound("coin")};
+const oldAskWizard=askWizard;
+askWizard=function(){oldAskWizard();rcSound("magic")};
+const oldSecretButton=secretButton;
+secretButton=function(){oldSecretButton();rcSound("magic")};
+const oldBecomeKing=becomeKing;
+becomeKing=function(){oldBecomeKing();rcSound("win");rcFlash()};
+const oldCatchCoin=catchCoin;
+catchCoin=function(){oldCatchCoin();rcSound("coin")};
+const oldCelebrateCastle=celebrateCastle;
+celebrateCastle=function(){oldCelebrateCastle();rcSound("win")};
+const oldGenerateCertificate=generateCertificate;
+generateCertificate=function(){oldGenerateCertificate();rcSound("win")};
+const oldResetCastle=resetCastle;
+resetCastle=function(){rcSound("whoosh");oldResetCastle()};
+
+/* sparkle trail while moving over the castle */
+document.addEventListener("pointermove",e=>{
+  if(Math.random()>.93){
+    const s=document.createElement("span");s.className="rc-cursor-spark";s.textContent="✦";
+    s.style.left=e.clientX+"px";s.style.top=e.clientY+"px";document.body.appendChild(s);
+    setTimeout(()=>s.remove(),500);
+  }
+});
+
+
+/* ================= FIRST-TIME USER MANUAL ================= */
+function closeUserManual(){
+    const overlay=document.getElementById("userManualOverlay");
+    if(!overlay) return;
+    overlay.style.animation="manualFadeIn .25s ease reverse";
+    setTimeout(()=>{ if(overlay) overlay.style.display="none"; },220);
+}
+
+/* Step-by-step instructions: nothing is stored in localStorage.
+   The next instruction appears only after the current quest/level is cleared. */
+const rcLevelGuides={
+  1:{icon:"🚪",level:"LEVEL 1",title:"Enter ReCastell",text:"Click the gate lock or ENTER RECASTELL. Then open the THRONE ROOM and become the King. Your royal power is absolutely zero. 😂",button:"🏰 START LEVEL 1"},
+  2:{icon:"💰",level:"LEVEL 2 UNLOCKED",title:"Collect the Useless Treasure",text:"Great job, Your Useless Majesty! Now visit the TREASURE ROOM and collect at least one useless coin. It has no real value. 🪙😂",button:"💰 START LEVEL 2"},
+  3:{icon:"🧙",level:"LEVEL 3 UNLOCKED",title:"Consult the Wizard",text:"You survived the treasury. Now visit the WIZARD TOWER and ask the wizard for advice. The advice may be magical or completely pointless. 🧙😂",button:"🧙 START LEVEL 3"},
+  4:{icon:"🔮",level:"FINAL LEVEL UNLOCKED",title:"Find the Forbidden Uselessness",text:"All main quests are complete! Now try the SECRET ROOM, play the useless activities, increase your Uselessness, and finally claim your Certificate of Uselessness. 🏆😂",button:"🔮 ENTER FINAL LEVEL"}
+};
+
+function showLevelGuide(level){
+    const data=rcLevelGuides[level];
+    const overlay=document.getElementById("userManualOverlay");
+    if(!data || !overlay) return;
+    document.getElementById("manualIcon").innerText=data.icon;
+    document.getElementById("manualLevel").innerText=data.level;
+    document.getElementById("manualTitle").innerText="📜 "+data.title;
+    document.getElementById("manualSubtitle").innerText="New instruction unlocked! Complete this step to continue. 😂";
+    document.getElementById("manualContent").innerHTML='<div class="manual-icon">'+data.icon+'</div><div><strong>'+data.title+'</strong><span>'+data.text+'</span></div>';
+    document.getElementById("manualAction").innerText=data.button;
+    overlay.style.display="flex";
+    overlay.style.animation="manualFadeIn .35s ease";
+}
+
+
+
+/* 🐔 CHICKEN EVENT — EVERY 10 SECONDS */
+(function(){
+  const chickenDialogues=[
+    "🐔 Catch me if you can! I'm faster than your Wi-Fi!",
+    "😂 Bro really thought he could catch me!",
+    "🐔 SECURITY UPDATE: Chicken has escaped again.",
+    "🚨 ERROR 404: Chicken not found... Oh wait, there it is!",
+    "🐔 Don't touch me! I'm an important castle employee.",
+    "😂 You wasted your time chasing a chicken. PERFECT!",
+    "🐔 I have a PhD in ESCAPING HUMANS.",
+    "🏃 Too slow! Even the castle walls are laughing at you.",
+    "🐔 Catch attempt failed. Productivity decreased by 10%.",
+    "😂 Congratulations! You almost caught absolutely nothing.",
+    "🐔 My lawyer has advised me not to get caught.",
+    "🚨 CHICKEN STATUS: Still undefeated.",
+    "🐔 You chase me, I increase your uselessness. Fair deal.",
+    "😂 The chicken has officially defeated the player.",
+    "🐔 Nice try, human. Now go do something useless."
+  ];
+  function chickenMessage(text){
+    const m=document.getElementById('recastellChickenMsg');
+    if(!m)return; m.textContent=text; m.classList.remove('show'); void m.offsetWidth; m.classList.add('show');
+  }
+  function spawnChicken(){
+    const page=document.getElementById('castlePage');
+    const chicken=document.getElementById('recastellChicken');
+    if(!page||!chicken||page.style.display==='none')return;
+    chicken.classList.remove('running'); void chicken.offsetWidth; chicken.classList.add('running');
+    chickenMessage('🐔 CATCH THE CHICKEN! 🎁 Catch it and you will get a surprise! 😂');
+    if(typeof rcSound==='function')rcSound('whoosh');
+    setTimeout(()=>chicken.classList.remove('running'),8100);
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    const chicken=document.getElementById('recastellChicken');
+    if(chicken){chicken.addEventListener('click',function(){
+      const text=chickenDialogues[Math.floor(Math.random()*chickenDialogues.length)];
+      chickenMessage(text);
+      if(typeof rcSound==='function')rcSound('error');
+      if(typeof increaseUselessness==='function')increaseUselessness(3);
+      chicken.classList.remove('running');
+    });}
+    setInterval(spawnChicken,10000);
+  });
+})();
+</script>
+
+
+
+<!-- 🐔 Chicken Event -->
+<div id="recastellChicken" title="CLICK ME IF YOU CAN!">🐔</div>
+<div id="recastellChickenMsg"></div>
+
+</body>
+
+</html>
